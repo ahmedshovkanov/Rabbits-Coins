@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class CarrotWindowManager : MonoBehaviour
 {
@@ -33,20 +34,52 @@ public class CarrotWindowManager : MonoBehaviour
         RowsSetup();
         SpawnCarrots();
     }
+    public GameObject RowPrefab;
+    public Transform RowParent;
+
+    public void HomeBtn()
+    {
+        SceneManager.LoadScene(1);
+    }
+
+    public void BonusGameBtn()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
 
     private void RowsSetup()
     {
         int carrotsDif = 15 - SaveSystem.Instance.CurActivePerson.carrots.Count;
-
-        if(carrotsDif > 0)
+        for (int i = 0; i < SaveSystem.Instance.CurActivePerson.carrots.Count; i++)
         {
-            List<int> dividedNumbers = DivideWithRemainder(carrotsDif, 3);
+            Instantiate(RowPrefab, RowParent);
         }
+        //Debug.LogWarning("rows to spawn " + rowsToSpawn);
+        //if (carrotsDif > 0)
+        //{
+        //    int rowsToSpawn = DivideWithRemainder(carrotsDif, 3);
+        //    Debug.LogWarning("rows to spawn " + rowsToSpawn);
+        //    for (int i = 0; i < rowsToSpawn; i++)
+        //    {
+        //        Instantiate(RowPrefab, RowParent);
+        //        Instantiate(RowPrefab, RowParent);
+        //    }
+        //}
     }
 
-    public List<int> DivideWithRemainder(int number, int divisor)
+    public int DivideWithRemainder(int number, int divisor)
     {
-        
+        int result = 0;
+
+        int baseValue = number / divisor; 
+        int remainder = number % divisor;
+
+        if (remainder > 0)
+        {
+            result++;
+        }
+
+        return result;
     }
 
     public void SpawnCarrots()
@@ -59,8 +92,51 @@ public class CarrotWindowManager : MonoBehaviour
             Debug.LogWarning("No carrot data to spawn!");
             return;
         }
-
-        
+        int count = SaveSystem.Instance.CurActivePerson.carrots.Count;
+        int row = 0;
+        for (int i = 0; i < count; i += 3)
+        {
+            if (row % 2 == 0)
+            {
+                if (i < count)
+                {
+                    CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(firstRowIndices[0])).GetComponent<CarrotHandler>();
+                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i]);
+                }
+                if (i < count)
+                {
+                    CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(firstRowIndices[1])).GetComponent<CarrotHandler>();
+                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 1]);
+                }
+                if (i < count)
+                {
+                    CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(firstRowIndices[2])).GetComponent<CarrotHandler>();
+                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 2]);
+                }
+                Debug.Log($"{row} is even");
+                row++;
+            }
+            else
+            {
+                if (i < count)
+                {
+                    CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(secondRowIndices[0])).GetComponent<CarrotHandler>();
+                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i]);
+                }
+                if (i < count)
+                {
+                    CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(secondRowIndices[1])).GetComponent<CarrotHandler>();
+                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 1]);
+                }
+                if (i < count)
+                {
+                    CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(secondRowIndices[2])).GetComponent<CarrotHandler>();
+                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 2]);
+                }
+                Debug.Log($"{row} is odd");
+                row++;
+            }
+        }
     }
 
     private Transform GetTargetParent(int rowCounter, int carrotIndex)

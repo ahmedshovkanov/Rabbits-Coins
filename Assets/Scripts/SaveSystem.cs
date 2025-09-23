@@ -24,12 +24,12 @@ public class SaveSystem : MonoBehaviour
 
     public void PlantCarrot()
     {
-        CarrotData car = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin / 60, DateTime.Now);
+        CarrotData car = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin / 60, DateTime.Now, SaveSystem.Instance.CurActivePerson.InterestRate);
         SaveSystem.Instance.CurActivePerson.carrots.Add(car);
 
         for (int i = 0; i < SaveSystem.Instance.CurActivePerson.InterestRate; i++)
         {
-            CarrotData car_i = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin / 60, DateTime.Now);
+            CarrotData car_i = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin / 60, DateTime.Now, SaveSystem.Instance.CurActivePerson.InterestRate);
         }
     }
 

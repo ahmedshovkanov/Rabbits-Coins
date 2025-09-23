@@ -96,6 +96,11 @@ public class CoinsSceneManager : MonoBehaviour
         CoinsText.text = Person.Coins.ToString(); // call this after manipulations
     }
 
+    public void HomeBtn()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+
     public void SpawnImageAtCenter()
     {
         if (imagePrefab == null || canvasTransform == null)

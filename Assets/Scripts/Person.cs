@@ -22,14 +22,16 @@ public class Person
 [Serializable]
 public class CarrotData
 {
-    public CarrotData(float time, DateTime datePlanted)
+    public CarrotData(float time, DateTime datePlanted, int interestRateWhenPlanted)
     {
-        timeLeftToGrow = time;
+        growthTimeSeconds = time;
         plantDate = datePlanted;
+        this.interestRateWhenPlanted = interestRateWhenPlanted;
     }
     public DateTime plantDate;
     public int row;
-    public float timeLeftToGrow;
+    public float growthTimeSeconds;
+    public int interestRateWhenPlanted;
     public bool isGrowing;
 
     public void DisplayInfo()

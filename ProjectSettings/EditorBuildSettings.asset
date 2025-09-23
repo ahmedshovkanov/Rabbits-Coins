@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/coins.unity
     guid: f42b8c664707f1843902f94dd3e8aa6d
+  - enabled: 1
+    path: Assets/Carrots.unity
+    guid: df9141dd783a82a41b6846c8e766e9c6
   m_configObjects: {}
