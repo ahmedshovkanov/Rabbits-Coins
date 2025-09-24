@@ -359,7 +359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c64c06e073caca43b7fd35199b30afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Link: 
+  Link: https://rabbitscoins.com/privacy-policy.html
 --- !u!1 &556129762
 GameObject:
   m_ObjectHideFlags: 0

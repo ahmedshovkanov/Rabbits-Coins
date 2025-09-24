@@ -24,12 +24,12 @@ public class SaveSystem : MonoBehaviour
 
     public void PlantCarrot()
     {
-        CarrotData car = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin / 60, DateTime.Now, SaveSystem.Instance.CurActivePerson.InterestRate);
+        CarrotData car = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin * 60, DateTime.Now, SaveSystem.Instance.CurActivePerson.InterestRate);
         SaveSystem.Instance.CurActivePerson.carrots.Add(car);
 
         for (int i = 0; i < SaveSystem.Instance.CurActivePerson.InterestRate; i++)
         {
-            CarrotData car_i = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin / 60, DateTime.Now, SaveSystem.Instance.CurActivePerson.InterestRate);
+            CarrotData car_i = new CarrotData(SaveSystem.Instance.CurActivePerson.GrowthInMin * 60, DateTime.Now, SaveSystem.Instance.CurActivePerson.InterestRate);
         }
     }
 
@@ -44,13 +44,19 @@ public class SaveSystem : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
-
+            //Destroy(gameObject);
+            Initialize();
         }
     }
 
     public void Initialize()
     {
+        Debug.Log("save sysyem init");
+        buttonParent = GameObject.Find("ListList").transform;
+        if (buttonParent == null)
+        {
+            
+        }
         savePath = Path.Combine(Application.persistentDataPath, "savesgame.json");
         currentGameData = new GameData();
         LoadGame();
@@ -253,6 +259,7 @@ public class SaveSystem : MonoBehaviour
         // Destroy all instantiated buttons
         foreach (GameObject button in instantiatedButtons)
         {
+            Debug.Log(button.name);
             if (button != null)
             {
                 Destroy(button);

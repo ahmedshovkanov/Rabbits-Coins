@@ -24,6 +24,7 @@ public class CarrotData
 {
     public CarrotData(float time, DateTime datePlanted, int interestRateWhenPlanted)
     {
+        Debug.Log(datePlanted);
         growthTimeSeconds = time;
         plantDate = datePlanted;
         this.interestRateWhenPlanted = interestRateWhenPlanted;

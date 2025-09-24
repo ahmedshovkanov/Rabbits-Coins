@@ -1236,6 +1236,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1584348477}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &994664069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1379,7 +1391,7 @@ GameObject:
   - component: {fileID: 1186013631}
   - component: {fileID: 1186013632}
   m_Layer: 5
-  m_Name: List
+  m_Name: ListList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1865,6 +1877,7 @@ MonoBehaviour:
     people: []
     score: 0
     lastSaveTime: 
+  people: []
   buttonPrefab: {fileID: 3107005442625213574, guid: 27066872235729546933fe57c8ad4e5f, type: 3}
   buttonParent: {fileID: 1186013631}
   CurActivePerson:

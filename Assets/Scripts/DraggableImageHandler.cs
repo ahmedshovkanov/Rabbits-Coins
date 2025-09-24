@@ -139,7 +139,7 @@ public class DraggableImageHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     private void HandleGardenDrop(GameObject gardenObject)
     {
-        Debug.Log($"Dropped on garden: {gardenObject.name}");
+        //Debug.Log($"Dropped on garden: {gardenObject.name}");
 
         // Add your garden-specific logic here
         // Example: Change color, trigger animation, etc.
