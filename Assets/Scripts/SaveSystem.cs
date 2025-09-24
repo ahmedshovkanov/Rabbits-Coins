@@ -13,10 +13,10 @@ public class SaveSystem : MonoBehaviour
     private string savePath;
     public GameData currentGameData;
 
-    //public List<Person> People => currentGameData.people;
+    public List<Person> People => currentGameData.people;
     //public List<CarrotData> Carrots => currentGameData.carrots;
 
-    //public List<Person> people = new List<Person>();
+    public List<Person> people = new List<Person>();
     public GameObject buttonPrefab; // Assign your button prefab in the inspector
     public Transform buttonParent;
 
@@ -35,6 +35,7 @@ public class SaveSystem : MonoBehaviour
 
     private void Awake()
     {
+
         if (Instance == null)
         {
             Instance = this;
@@ -44,6 +45,7 @@ public class SaveSystem : MonoBehaviour
         else
         {
             Destroy(gameObject);
+
         }
     }
 
@@ -88,7 +90,7 @@ public class SaveSystem : MonoBehaviour
                 if (currentGameData.people == null)
                     currentGameData.people = new List<Person>();
                 //if (currentGameData.carrots == null)
-                 //   currentGameData.carrots = new List<CarrotData>();
+                //   currentGameData.carrots = new List<CarrotData>();
 
                 Debug.Log("Game loaded successfully from: " + savePath);
             }

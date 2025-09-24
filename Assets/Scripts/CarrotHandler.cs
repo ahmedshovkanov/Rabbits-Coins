@@ -8,10 +8,12 @@ using TMPro;
 public class CarrotHandler : MonoBehaviour
 {
     private CarrotData _carrot;
-    public TMP_Text TimeLeftText;
+    public TMP_Text timeText;
     float growthTimeLeft;
     private Image _imageRef;
     private bool _isFinished;
+
+    [SerializeField] private float seconds;
     public void InitHandler(CarrotData data)
     {
         _carrot = data;
@@ -27,7 +29,7 @@ public class CarrotHandler : MonoBehaviour
         // Ensure time left doesn't go below zero (carrot is already fully grown)
        // growthTimeLeft = Mathf.Max(0f, growthTimeLeft);
 
-        Debug.Log($"Time left for carrot to grow: {growthTimeLeft} seconds");
+        //Debug.Log($"Time left for carrot to grow: {growthTimeLeft} seconds");
 
         // Optional: Convert to more readable format
         //TimeSpan timeLeft = TimeSpan.FromSeconds(growthTimeLeft);
@@ -69,8 +71,46 @@ public class CarrotHandler : MonoBehaviour
                     }
                 }
             }
+            UpdateTimeDisplay();
             yield return new WaitForSeconds(1f);
         }
+    }
+
+    public void SetSeconds(float newSeconds)
+    {
+        seconds = newSeconds;
+        UpdateTimeDisplay();
+    }
+
+    private void UpdateTimeDisplay()
+    {
+        if (timeText == null) return;
+
+        timeText.text = FormatTime(seconds);
+    }
+
+    private string FormatTime(float totalSeconds)
+    {
+        if (totalSeconds >= 3600f) // 1 hour or more
+        {
+            float hours = totalSeconds / 3600f;
+            return $"{hours:F1}h"; // Format with 1 decimal place
+        }
+        else if (totalSeconds >= 60f) // 1 minute or more
+        {
+            float minutes = totalSeconds / 60f;
+            return $"{minutes:F1}m"; // Format with 1 decimal place
+        }
+        else // Less than 1 minute
+        {
+            return $"{totalSeconds:F1}s"; // Format with 1 decimal place
+        }
+    }
+
+    // Optional: Method to handle integer seconds
+    public void SetSeconds(int secondsInt)
+    {
+        SetSeconds((float)secondsInt);
     }
 
     private void OnDisable()

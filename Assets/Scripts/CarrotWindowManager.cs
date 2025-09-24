@@ -44,7 +44,7 @@ public class CarrotWindowManager : MonoBehaviour
 
     public void BonusGameBtn()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(0);
     }
 
     private void RowsSetup()
@@ -101,17 +101,26 @@ public class CarrotWindowManager : MonoBehaviour
                 if (i < count)
                 {
                     CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(firstRowIndices[0])).GetComponent<CarrotHandler>();
-                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i]);
+                    if (car != null)
+                    {
+                        car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i]);
+                    }
                 }
-                if (i < count)
+                if (i + 1 < count)
                 {
                     CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(firstRowIndices[1])).GetComponent<CarrotHandler>();
-                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 1]);
+                    if (car != null)
+                    {
+                        car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 1]);
+                    }
                 }
-                if (i < count)
+                if (i + 2 < count)
                 {
                     CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(firstRowIndices[2])).GetComponent<CarrotHandler>();
-                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 2]);
+                    if (car != null)
+                    {
+                        car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 2]);
+                    }
                 }
                 Debug.Log($"{row} is even");
                 row++;
@@ -121,17 +130,26 @@ public class CarrotWindowManager : MonoBehaviour
                 if (i < count)
                 {
                     CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(secondRowIndices[0])).GetComponent<CarrotHandler>();
-                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i]);
+                    if (car != null)
+                    {
+                        car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i]);
+                    }
                 }
-                if (i < count)
+                if (i + 1 < count)
                 {
                     CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(secondRowIndices[1])).GetComponent<CarrotHandler>();
-                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 1]);
+                    if (car != null)
+                    {
+                        car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 1]);
+                    }
                 }
-                if (i < count)
+                if (i + 2 < count)
                 {
                     CarrotHandler car = Instantiate(carrotPrefab, containerParent.GetChild(row).GetChild(secondRowIndices[2])).GetComponent<CarrotHandler>();
-                    car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 2]);
+                    if (car != null)
+                    {
+                        car.InitHandler(SaveSystem.Instance.CurActivePerson.carrots[i + 2]);
+                    }
                 }
                 Debug.Log($"{row} is odd");
                 row++;
