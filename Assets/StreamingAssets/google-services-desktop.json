@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "project_number": "94728548645",
+    "project_id": "rabbits-coins",
+    "storage_bucket": "rabbits-coins.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94728548645:ios:75731348906a7f4e4deacc",
+        "android_client_info": {
+          "package_name": "com.toddhale.rabcoins"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyBakQ7h4IcGjC9fwiNvFfmXHkjmZBTHimo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 0
+        },
+        "appinvite_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
