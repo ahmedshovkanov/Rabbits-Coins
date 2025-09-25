@@ -257,15 +257,21 @@ public class SaveSystem : MonoBehaviour
     void ClearButtons()
     {
         // Destroy all instantiated buttons
-        foreach (GameObject button in instantiatedButtons)
+
+        for (int i = 0; i < buttonParent.childCount; i++)
         {
-            Debug.Log(button.name);
-            if (button != null)
-            {
-                Destroy(button);
-            }
+            Destroy(buttonParent.GetChild(i).gameObject);
         }
-        instantiatedButtons.Clear();
+
+        //foreach (GameObject button in instantiatedButtons)
+        //{
+        //    Debug.Log(button.name);
+        //    if (button != null)
+        //    {
+        //        Destroy(button);
+        //    }
+        //}
+        //instantiatedButtons.Clear();
     }
 
     // Optional: Call this if you need to refresh buttons when the list changes

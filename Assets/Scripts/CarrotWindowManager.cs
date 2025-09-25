@@ -39,7 +39,7 @@ public class CarrotWindowManager : MonoBehaviour
 
     public void HomeBtn()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     public void BonusGameBtn()
