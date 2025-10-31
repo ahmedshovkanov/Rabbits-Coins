@@ -144,9 +144,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e75294e67e74e884c94e9553c4a8fe4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resizeByAnchors: 1
+  _resizeByAnchors: 0
   _resizeByImageReplace: 0
-  _resizeByPosition: 0
+  _resizeByPosition: 1
   _portImage: {fileID: 0}
   _landImage: {fileID: 0}
   _portPos: {x: 0, y: 180}
@@ -444,9 +444,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e75294e67e74e884c94e9553c4a8fe4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resizeByAnchors: 1
+  _resizeByAnchors: 0
   _resizeByImageReplace: 0
-  _resizeByPosition: 0
+  _resizeByPosition: 1
   _portImage: {fileID: 0}
   _landImage: {fileID: 0}
   _portPos: {x: -139, y: 733}
@@ -527,15 +527,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e75294e67e74e884c94e9553c4a8fe4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resizeByAnchors: 1
+  _resizeByAnchors: 0
   _resizeByImageReplace: 0
-  _resizeByPosition: 0
+  _resizeByPosition: 1
   _portImage: {fileID: 0}
   _landImage: {fileID: 0}
   _portPos: {x: 10000, y: 10000}
   _landPos: {x: 961, y: -37}
   _portSize: {x: 1080, y: 1352}
-  _landSize: {x: 0, y: 0}
+  _landSize: {x: 1080, y: 1352}
   _anchorsPortMin: {x: 0, y: 0}
   _anchorsPortMax: {x: 0, y: 0}
   _anchorsLandMin: {x: 0, y: 0}
@@ -661,7 +661,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 17d7f15c84d2b3845a3465030fdc5ff5, type: 3}
     - target: {fileID: 1238351459588419402, guid: 629a3a947bad642e6944539a7b41be1e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2153077427638051360, guid: 629a3a947bad642e6944539a7b41be1e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -717,7 +717,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2537187917217169010, guid: 629a3a947bad642e6944539a7b41be1e, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 1539.818
       objectReference: {fileID: 0}
     - target: {fileID: 2537187917217169010, guid: 629a3a947bad642e6944539a7b41be1e, type: 3}
       propertyPath: m_SizeDelta.y
