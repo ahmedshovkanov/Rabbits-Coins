@@ -22,7 +22,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         Promotional,
         PromotionalPush
     }
-    
+
     private enum LaunchStage
     {
         WaitForConversion,
@@ -31,17 +31,17 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         WaitForPushDecision,
         Launch
     }
-    
-    private string DictToJson(Dictionary<string, object> dictionary) => 
-        "{" + string.Join(",", dictionary.Select(kvp => kvp.Value != null ? 
+
+    private string DictToJson(Dictionary<string, object> dictionary) =>
+        "{" + string.Join(",", dictionary.Select(kvp => kvp.Value != null ?
             $"\"{kvp.Key}\":{(kvp.Value is string ? $"\"{kvp.Value}\"" : kvp.Value.ToString().ToLower())}" : $"\"{kvp.Key}\":null")) + "}";
     private static Rect FlipRectY(Rect rect) => new(rect.x, Screen.height - rect.yMax, rect.width, rect.height);
-    
-    
+
+
     [SerializeField] private string devKey;
-    [SerializeField] [Tooltip("Only numbers allowed")] private string appleID;
+    [SerializeField][Tooltip("Only numbers allowed")] private string appleID;
     [SerializeField] private float maxAwaitTime = 10f;
-    [SerializeField] [Tooltip("https://example.com")] private string analyticsURL = "";
+    [SerializeField][Tooltip("https://example.com")] private string analyticsURL = "";
 
     [SerializeField] private GameObject loadingScreenObject;
     [SerializeField] private GameObject pushDecisionScreenObject;
@@ -65,7 +65,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     private LaunchMode? __launchModeValue = null;
 
     private LaunchStage _launchStage = LaunchStage.WaitForConversion;
-    
+
     private string _conversionString
     {
         get => PlayerPrefs.GetString("_conversionString", "");
@@ -96,8 +96,8 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             PlayerPrefs.Save();
         }
     }
-    
-    
+
+
     private bool _appHaveNotificationsPermission
     {
         get => bool.Parse(PlayerPrefs.GetString("_appHaveNotificationsPermission", false.ToString()));
@@ -115,7 +115,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
 
     private Coroutine _launchViewRoutine;
     private string _firebaseToken;
-    
+
     private void Awake()
     {
         UniWebView.SetAllowAutoPlay(true);
@@ -128,7 +128,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             FirebaseMessaging.MessageReceived += OnMessageReceived;
         }
     }
-    
+
     private IEnumerator Start()
     {
         if (Application.internetReachability is NetworkReachability.NotReachable)
@@ -144,8 +144,8 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             yield return LoadAndVerifyAppsFlyer();
             if (_launchStage is LaunchStage.WaitForPromotional)
                 yield return TryGetPromotional();
-            _launchMode = !string.IsNullOrEmpty(_promotionalURL) 
-                ? LaunchMode.Promotional 
+            _launchMode = !string.IsNullOrEmpty(_promotionalURL)
+                ? LaunchMode.Promotional
                 : LaunchMode.Basic;
             _launchStage = DateTime.Now - _lastPushDecisionDateTime > TimeSpan.FromDays(3) &&
                            !_appHaveNotificationsPermission &&
@@ -155,8 +155,8 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             pushDecisionScreenObject.SetActive(_launchStage is LaunchStage.WaitForPushDecision);
             yield return new WaitWhile(() => _launchStage is LaunchStage.WaitForPushDecision);
         }
-        _oneTimePromotionalURL = string.IsNullOrEmpty(_oneTimePromotionalURL) 
-            ? _promotionalURL 
+        _oneTimePromotionalURL = string.IsNullOrEmpty(_oneTimePromotionalURL)
+            ? _promotionalURL
             : _oneTimePromotionalURL;
         switch (_launchMode)
         {
@@ -191,7 +191,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         _conversionDictionary.TryAdd("os", "iOS");
         yield return PromotionalURLRequest(DictToJson(_conversionDictionary));
     }
-    
+
     private IEnumerator PromotionalURLRequest(string json)
     {
         using var webRequest = UnityWebRequest.Post($"{analyticsURL.Trim().TrimEnd('/')}/config.php", json, "application/json");
@@ -208,10 +208,10 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
                     : _promotionalURL;
         }
     }
-    
+
     private IEnumerator TryGetOutOfViewList(Action<List<string>> callback)
     {
-        using var webRequest = UnityWebRequest.Get($"{analyticsURL.Trim().TrimEnd('/')}/sites");       
+        using var webRequest = UnityWebRequest.Get($"{analyticsURL.Trim().TrimEnd('/')}/sites");
         webRequest.timeout = DEFAULT_WEBREQUEST_TIMEOUT;
         yield return webRequest.SendWebRequest();
         var result = new List<string>();
@@ -224,28 +224,28 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         }
         callback?.Invoke(result);
     }
-    
+
     private IEnumerator SetUserAgent(UniWebView view)
     {
         yield return new WaitWhile(() => view is null);
         view.SetUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1");
     }
-    
+
     private IEnumerator InstantiateWebviewAndRun(string launchURL)
     {
         var view = gameObject.AddComponent<UniWebView>();
         var outOfViewList = new List<string>();
         yield return TryGetOutOfViewList(result => outOfViewList = result);
-        StartCoroutine( SetUserAgent(view));
+        StartCoroutine(SetUserAgent(view));
         view.EmbeddedToolbar.Hide();
-        view.RegisterOnRequestMediaCapturePermission(permission => UniWebViewMediaCapturePermissionDecision.Grant); 
+        view.RegisterOnRequestMediaCapturePermission(permission => UniWebViewMediaCapturePermissionDecision.Grant);
         view.SetSupportMultipleWindows(false, true);
         view.SetAllowFileAccess(true);
         view.SetCalloutEnabled(true);
         view.SetBackButtonEnabled(true);
         view.SetAllowBackForwardNavigationGestures(true);
         view.SetAcceptThirdPartyCookies(true);
-        
+
         view.OnShouldClose += webView => false;
         view.OnPageFinished += (webView, code, url) =>
         {
@@ -294,13 +294,13 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         };
         view.Load(launchURL);
     }
-    
-    private void OnTokenReceived(object sender, TokenReceivedEventArgs token) 
+
+    private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
     {
         _firebaseToken = token.Token;
         StartCoroutine(TryUpdateFirebaseTokenAndGetPromotional());
     }
-    
+
     private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
     {
         if (e.Message.NotificationOpened && e.Message.Data.TryGetValue("url", out var messageUrl))
@@ -323,7 +323,9 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     private void OnDeepLink(object sender, EventArgs eventArgs)
     {
         var deepLinkEventArgs = eventArgs as DeepLinkEventsArgs;
-        switch (deepLinkEventArgs!.status)
+        if (deepLinkEventArgs == null) return;
+
+        switch (deepLinkEventArgs.status)
         {
             case DeepLinkStatus.FOUND:
                 Debug.Log("Found deeplink");
@@ -333,15 +335,15 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
                 // deepLinkParamsDictionary contains all the deep link parameters as keys
                 var deepLinkParamsDictionary = new Dictionary<string, object>();
 #if UNITY_IOS && !UNITY_EDITOR
-              if (deepLinkEventArgs.deepLink.ContainsKey("click_event") && deepLinkEventArgs.deepLink["click_event"] != null)
-              {
-                  deepLinkParamsDictionary = deepLinkEventArgs.deepLink["click_event"] as Dictionary<string, object>;
-              }
+                if (deepLinkEventArgs.deepLink.ContainsKey("click_event") && deepLinkEventArgs.deepLink["click_event"] != null)
+                {
+                    deepLinkParamsDictionary = deepLinkEventArgs.deepLink["click_event"] as Dictionary<string, object>;
+                }
 #elif UNITY_ANDROID && !UNITY_EDITOR
-                  Debug.Log("Load deeplink values");
-                  deepLinkParamsDictionary = deepLinkEventArgs.deepLink;
+                Debug.Log("Load deeplink values");
+                deepLinkParamsDictionary = deepLinkEventArgs.deepLink;
 #endif                
-                _conversionDictionary = 
+                _conversionDictionary =
                     _conversionDictionary
                         .Concat(deepLinkParamsDictionary)
                         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
@@ -354,37 +356,37 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
                 AppsFlyer.AFLog("OnDeepLink", "Deep link error");
                 break;
         }
-    } 
+    }
 
     private IEnumerator LoadAndVerifyAppsFlyer()
     {
         var launchTimestamp = Time.time;
         var isFirstLaunch = string.IsNullOrEmpty(_conversionString);
-        AppsFlyer.initSDK(devKey, appleID, this);        
-        AppsFlyer.OnDeepLinkReceived += OnDeepLink;        
+        AppsFlyer.initSDK(devKey, appleID, this);
+        AppsFlyer.OnDeepLinkReceived += OnDeepLink;
         AppsFlyer.startSDK();
         yield return new WaitForSeconds(1f); //deep link callback delay
-        yield return new WaitWhile(() => string.IsNullOrEmpty(_conversionString) && Time.time - launchTimestamp < maxAwaitTime);                
+        yield return new WaitWhile(() => string.IsNullOrEmpty(_conversionString) && Time.time - launchTimestamp < maxAwaitTime);
         _conversionDictionary = string.IsNullOrEmpty(_conversionString)
             ? _conversionDictionary
             : _conversionDictionary
                 .Concat(AppsFlyer.CallbackStringToDictionary(_conversionString))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);                                
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         if (_conversionDictionary!.Count == 0)
         {
             _launchMode = LaunchMode.Basic;
             _launchStage = LaunchStage.Launch;
             yield break;
-        }                
+        }
         _launchStage = LaunchStage.WaitForConversionVerify;
         if (_conversionDictionary.ContainsKey("af_status") &&
             _conversionDictionary["af_status"].ToString().ToLower() == "organic" && isFirstLaunch)
         {
-            yield return new WaitForSeconds(5f);            
+            yield return new WaitForSeconds(5f);
             using var webRequest =
                 UnityWebRequest.Get(
                     $"https://gcdsdk.appsflyer.com/install_data/v4.0/id{appleID}?devkey={devKey}&device_id={AppsFlyer.getAppsFlyerId()}");
-            webRequest.timeout = DEFAULT_WEBREQUEST_TIMEOUT;            
+            webRequest.timeout = DEFAULT_WEBREQUEST_TIMEOUT;
             yield return webRequest.SendWebRequest();
             if (webRequest.result == UnityWebRequest.Result.Success)
             {
@@ -398,7 +400,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         }
         _launchStage = LaunchStage.WaitForPromotional;
     }
-    
+
     public void EnablePush(bool decision)
     {
         _lastPushDecisionDateTime = DateTime.Now;
@@ -408,7 +410,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         _launchStage = LaunchStage.Launch;
         pushDecisionScreenObject.SetActive(false);
     }
-    
+
     public void onConversionDataSuccess(string conversionData)
     {
         if (string.IsNullOrEmpty(_conversionString))
@@ -422,11 +424,11 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
 
     public void onAppOpenAttribution(string attributionData)
     {
-        throw new NotImplementedException();
+        // Implemented to satisfy interface
     }
 
     public void onAppOpenAttributionFailure(string error)
     {
-        throw new NotImplementedException();
+        // Implemented to satisfy interface
     }
 }
