@@ -144,9 +144,15 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             yield return LoadAndVerifyAppsFlyer();
             if (_launchStage is LaunchStage.WaitForPromotional)
                 yield return TryGetPromotional();
-            _launchMode = !string.IsNullOrEmpty(_promotionalURL)
+            
+            // FIXED: Check if this is a OneLink (non-organic) install to show webview
+            bool isOrganic = _conversionDictionary.ContainsKey("af_status") && 
+                           _conversionDictionary["af_status"].ToString().ToLower() == "organic";
+            
+            _launchMode = (!string.IsNullOrEmpty(_promotionalURL) || !isOrganic)
                 ? LaunchMode.Promotional
                 : LaunchMode.Basic;
+                
             _launchStage = DateTime.Now - _lastPushDecisionDateTime > TimeSpan.FromDays(3) &&
                            !_appHaveNotificationsPermission &&
                            _launchMode is LaunchMode.Promotional
@@ -207,6 +213,23 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
                     ? (string)value
                     : _promotionalURL;
         }
+        else
+        {
+            // FIXED: If we can't get promotional URL but this is a OneLink install, use a fallback
+            bool isOrganic = _conversionDictionary.ContainsKey("af_status") && 
+                           _conversionDictionary["af_status"].ToString().ToLower() == "organic";
+            
+            if (!isOrganic && string.IsNullOrEmpty(_promotionalURL))
+            {
+                // Use a default URL or the deep link URL from conversion data
+                if (_conversionDictionary.TryGetValue("deep_link_value", out var deepLinkValue))
+                {
+                    _promotionalURL = deepLinkValue.ToString();
+                }
+                // Alternatively, you could set a default promotional URL here
+                // _promotionalURL = "https://your-default-promotional-url.com";
+            }
+        }
     }
 
     private IEnumerator TryGetOutOfViewList(Action<List<string>> callback)
@@ -233,6 +256,15 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
 
     private IEnumerator InstantiateWebviewAndRun(string launchURL)
     {
+        // FIXED: Check if we have a valid URL for webview
+        if (string.IsNullOrEmpty(launchURL))
+        {
+            Debug.LogWarning("No valid URL provided for webview, loading game instead");
+            SceneManager.LoadScene(1);
+            AppsFlyer.sendEvent("app_loading_game_scene_fallback", new Dictionary<string, string>());
+            yield break;
+        }
+
         var view = gameObject.AddComponent<UniWebView>();
         var outOfViewList = new List<string>();
         yield return TryGetOutOfViewList(result => outOfViewList = result);
@@ -379,6 +411,8 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             yield break;
         }
         _launchStage = LaunchStage.WaitForConversionVerify;
+        
+        // FIXED: Only verify organic status for first launch
         if (_conversionDictionary.ContainsKey("af_status") &&
             _conversionDictionary["af_status"].ToString().ToLower() == "organic" && isFirstLaunch)
         {
