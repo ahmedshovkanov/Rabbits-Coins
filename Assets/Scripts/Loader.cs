@@ -37,7 +37,6 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             $"\"{kvp.Key}\":{(kvp.Value is string ? $"\"{kvp.Value}\"" : kvp.Value.ToString().ToLower())}" : $"\"{kvp.Key}\":null")) + "}";
     private static Rect FlipRectY(Rect rect) => new(rect.x, Screen.height - rect.yMax, rect.width, rect.height);
 
-
     [SerializeField] private string devKey;
     [SerializeField][Tooltip("Only numbers allowed")] private string appleID;
     [SerializeField] private float maxAwaitTime = 10f;
@@ -97,7 +96,6 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         }
     }
 
-
     private bool _appHaveNotificationsPermission
     {
         get => bool.Parse(PlayerPrefs.GetString("_appHaveNotificationsPermission", false.ToString()));
@@ -108,7 +106,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
                 PlayerPrefs.SetString("_appHaveNotificationsPermission", true.ToString());
                 PlayerPrefs.Save();
                 AppsFlyer.sendEvent("app_notifications_attempt",
-                    new Dictionary<string, string>() { { "result", _appHaveNotificationsPermission.ToString() } });
+                    new Dictionary<string, string>() { { "result", value.ToString() } });
             }
         }
     }
@@ -123,10 +121,10 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         UniWebView.SetEnableKeyboardAvoidance(false);
         UniWebView.SetJavaScriptEnabled(true);
         UniWebView.SetForwardWebConsoleToNativeOutput(true);
-        if (_appHaveNotificationsPermission)
-        {
-            FirebaseMessaging.MessageReceived += OnMessageReceived;
-        }
+
+        // Initialize Firebase Messaging properly
+        Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
+        Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
     }
 
     private IEnumerator Start()
@@ -136,23 +134,25 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             networkInfoScreenObject.SetActive(true);
             yield break;
         }
+
         if (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() ==
             ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
             ATTrackingStatusBinding.RequestAuthorizationTracking();
+
         if (_launchMode is LaunchMode.None)
         {
             yield return LoadAndVerifyAppsFlyer();
             if (_launchStage is LaunchStage.WaitForPromotional)
                 yield return TryGetPromotional();
-            
+
             // FIXED: Check if this is a OneLink (non-organic) install to show webview
-            bool isOrganic = _conversionDictionary.ContainsKey("af_status") && 
+            bool isOrganic = _conversionDictionary.ContainsKey("af_status") &&
                            _conversionDictionary["af_status"].ToString().ToLower() == "organic";
-            
+
             _launchMode = (!string.IsNullOrEmpty(_promotionalURL) || !isOrganic)
                 ? LaunchMode.Promotional
                 : LaunchMode.Basic;
-                
+
             _launchStage = DateTime.Now - _lastPushDecisionDateTime > TimeSpan.FromDays(3) &&
                            !_appHaveNotificationsPermission &&
                            _launchMode is LaunchMode.Promotional
@@ -161,14 +161,14 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             pushDecisionScreenObject.SetActive(_launchStage is LaunchStage.WaitForPushDecision);
             yield return new WaitWhile(() => _launchStage is LaunchStage.WaitForPushDecision);
         }
+
         _oneTimePromotionalURL = string.IsNullOrEmpty(_oneTimePromotionalURL)
             ? _promotionalURL
             : _oneTimePromotionalURL;
+
         switch (_launchMode)
         {
             case LaunchMode.PromotionalPush:
-                FirebaseMessaging.TokenReceived += OnTokenReceived;
-                FirebaseMessaging.MessageReceived += OnMessageReceived;
                 yield return InstantiateWebviewAndRun(_oneTimePromotionalURL);
                 break;
             case LaunchMode.Promotional:
@@ -216,9 +216,9 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         else
         {
             // FIXED: If we can't get promotional URL but this is a OneLink install, use a fallback
-            bool isOrganic = _conversionDictionary.ContainsKey("af_status") && 
+            bool isOrganic = _conversionDictionary.ContainsKey("af_status") &&
                            _conversionDictionary["af_status"].ToString().ToLower() == "organic";
-            
+
             if (!isOrganic && string.IsNullOrEmpty(_promotionalURL))
             {
                 // Use a default URL or the deep link URL from conversion data
@@ -226,8 +226,6 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
                 {
                     _promotionalURL = deepLinkValue.ToString();
                 }
-                // Alternatively, you could set a default promotional URL here
-                // _promotionalURL = "https://your-default-promotional-url.com";
             }
         }
     }
@@ -330,11 +328,14 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
     {
         _firebaseToken = token.Token;
+        Debug.Log($"Firebase Token Received: {_firebaseToken}");
         StartCoroutine(TryUpdateFirebaseTokenAndGetPromotional());
     }
 
     private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
     {
+        Debug.Log($"Push Notification Received: {e.Message.Data}");
+
         if (e.Message.NotificationOpened && e.Message.Data.TryGetValue("url", out var messageUrl))
         {
             if (_launchStage is LaunchStage.Launch && TryGetComponent(typeof(UniWebView), out var view))
@@ -411,7 +412,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             yield break;
         }
         _launchStage = LaunchStage.WaitForConversionVerify;
-        
+
         // FIXED: Only verify organic status for first launch
         if (_conversionDictionary.ContainsKey("af_status") &&
             _conversionDictionary["af_status"].ToString().ToLower() == "organic" && isFirstLaunch)
@@ -440,7 +441,11 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         _lastPushDecisionDateTime = DateTime.Now;
         _launchMode = decision ? LaunchMode.PromotionalPush : LaunchMode.Promotional;
         if (!_appHaveNotificationsPermission && _launchMode is LaunchMode.PromotionalPush)
+        {
             _appHaveNotificationsPermission = true;
+            // Request notification permissions explicitly
+            Firebase.Messaging.FirebaseMessaging.RequestPermissionAsync();
+        }
         _launchStage = LaunchStage.Launch;
         pushDecisionScreenObject.SetActive(false);
     }
