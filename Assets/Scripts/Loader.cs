@@ -335,9 +335,18 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
     {
         Debug.Log($"Push Notification Received: {e.Message.Data}");
+        Debug.Log($"Notification Opened: {e.Message.NotificationOpened}");
 
-        if (e.Message.NotificationOpened && e.Message.Data.TryGetValue("url", out var messageUrl))
+        // Log all data in the message
+        foreach (var data in e.Message.Data)
         {
+            Debug.Log($"Data Key: {data.Key}, Value: {data.Value}");
+        }
+
+        // Check if this is a push notification with URL
+        if (e.Message.Data.TryGetValue("url", out var messageUrl))
+        {
+            Debug.Log($"Opening URL from push: {messageUrl}");
             if (_launchStage is LaunchStage.Launch && TryGetComponent(typeof(UniWebView), out var view))
             {
                 loadingScreenObject.SetActive(true);
@@ -443,8 +452,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         if (!_appHaveNotificationsPermission && _launchMode is LaunchMode.PromotionalPush)
         {
             _appHaveNotificationsPermission = true;
-            // Request notification permissions explicitly
-            Firebase.Messaging.FirebaseMessaging.RequestPermissionAsync();
+            Debug.Log("User granted push notification permission");
         }
         _launchStage = LaunchStage.Launch;
         pushDecisionScreenObject.SetActive(false);
