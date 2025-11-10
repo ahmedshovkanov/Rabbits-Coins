@@ -113,6 +113,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
 
     private Coroutine _launchViewRoutine;
     private string _firebaseToken;
+    private bool _isFirebaseInitialized = false;
 
     private void Awake()
     {
@@ -125,6 +126,24 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         // Initialize Firebase Messaging properly
         Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
         Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
+
+        // Initialize Firebase app
+        InitializeFirebase();
+    }
+
+    private void InitializeFirebase()
+    {
+        try
+        {
+            // This ensures Firebase is properly initialized
+            var firebaseApp = Firebase.FirebaseApp.DefaultInstance;
+            Debug.Log("Firebase App initialized: " + firebaseApp);
+            _isFirebaseInitialized = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Firebase initialization error: " + ex.Message);
+        }
     }
 
     private IEnumerator Start()
@@ -453,9 +472,30 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         {
             _appHaveNotificationsPermission = true;
             Debug.Log("User granted push notification permission");
+
+            // Force Firebase to re-register for notifications
+            StartCoroutine(ForceFirebaseRegistration());
         }
         _launchStage = LaunchStage.Launch;
         pushDecisionScreenObject.SetActive(false);
+    }
+
+    private IEnumerator ForceFirebaseRegistration()
+    {
+        // Wait a bit for the permission to be fully set
+        yield return new WaitForSeconds(1f);
+
+        // Try to re-initialize Firebase messaging if needed
+        try
+        {
+            Debug.Log("Attempting to force Firebase registration...");
+            // This should help with the registration after permission is granted
+            Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error in force registration: " + ex.Message);
+        }
     }
 
     public void onConversionDataSuccess(string conversionData)
