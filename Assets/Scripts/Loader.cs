@@ -114,7 +114,6 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     private Coroutine _launchViewRoutine;
     private string _firebaseToken;
     private bool _isFirebaseInitialized = false;
-    private bool _hasRequestedToken = false;
 
     private void Awake()
     {
@@ -136,58 +135,15 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     {
         try
         {
+            // This ensures Firebase is properly initialized
             var firebaseApp = Firebase.FirebaseApp.DefaultInstance;
             Debug.Log("Firebase App initialized: " + firebaseApp);
             _isFirebaseInitialized = true;
-
-            // Request the Firebase token immediately upon initialization
-            StartCoroutine(RequestFirebaseToken());
         }
         catch (Exception ex)
         {
             Debug.LogError("Firebase initialization error: " + ex.Message);
         }
-    }
-
-    private IEnumerator RequestFirebaseToken()
-    {
-        yield return new WaitForSeconds(1f); // Wait a bit for proper initialization
-
-        // Request the Firebase token
-        var task = Firebase.Messaging.FirebaseMessaging.GetTokenAsync();
-        while (!task.IsCompleted)
-        {
-            yield return new WaitForSeconds(0.5f);
-        }
-
-        if (task.Exception == null)
-        {
-            _firebaseToken = task.Result;
-            Debug.Log("Firebase Token obtained: " + _firebaseToken);
-
-            // Now that we have the token, proceed to check permissions and update
-            StartCoroutine(CheckAndRequestPermission());
-        }
-        else
-        {
-            Debug.LogError("Failed to get Firebase token: " + task.Exception.Message);
-        }
-    }
-
-    private IEnumerator CheckAndRequestPermission()
-    {
-        // Since we've already obtained the token, no need to wait here
-        if (string.IsNullOrEmpty(_firebaseToken))
-        {
-            yield break; // Token wasn't obtained successfully
-        }
-
-        // Proceed with checking permissions and other initializations
-        _conversionDictionary.TryAdd("push_token", _firebaseToken);
-        _conversionDictionary.TryAdd("firebase_project_id", Firebase.FirebaseApp.DefaultInstance.Options.ProjectId);
-
-        // Now, attempt to fetch promotional URL
-        yield return TryUpdateFirebaseTokenAndGetPromotional();
     }
 
     private IEnumerator Start()
@@ -246,11 +202,8 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
 
     private IEnumerator TryUpdateFirebaseTokenAndGetPromotional()
     {
-        if (!string.IsNullOrEmpty(_firebaseToken))
-        {
-            _conversionDictionary.TryAdd("push_token", _firebaseToken);
-            _conversionDictionary.TryAdd("firebase_project_id", Firebase.FirebaseApp.DefaultInstance.Options.ProjectId);
-        }
+        if (!string.IsNullOrEmpty(_firebaseToken)) _conversionDictionary.TryAdd("push_token", _firebaseToken);
+        if (!string.IsNullOrEmpty(_firebaseToken)) _conversionDictionary.TryAdd("firebase_project_id", Firebase.FirebaseApp.DefaultInstance.Options.ProjectId);
         yield return TryGetPromotional();
     }
 
@@ -395,12 +348,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     {
         _firebaseToken = token.Token;
         Debug.Log($"Firebase Token Received: {_firebaseToken}");
-
-        // Send the token to your analytics server
         StartCoroutine(TryUpdateFirebaseTokenAndGetPromotional());
-
-        // Log that we've received a token
-        Debug.Log("Token received and sent to server");
     }
 
     private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
@@ -414,7 +362,7 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             Debug.Log($"Data Key: {data.Key}, Value: {data.Value}");
         }
 
-        // Handle push notification with URL
+        // Check if this is a push notification with URL
         if (e.Message.Data.TryGetValue("url", out var messageUrl))
         {
             Debug.Log($"Opening URL from push: {messageUrl}");
@@ -430,11 +378,6 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             _oneTimePromotionalURL = messageUrl;
             if (!string.IsNullOrEmpty(_oneTimePromotionalURL)) AppsFlyer.sendEvent("app_opened_via_push",
                 new Dictionary<string, string>() { { "url", _oneTimePromotionalURL } });
-        }
-        else if (e.Message.NotificationOpened)
-        {
-            // Handle notification that was opened
-            Debug.Log("Notification was opened");
         }
     }
 
@@ -530,27 +473,28 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
             _appHaveNotificationsPermission = true;
             Debug.Log("User granted push notification permission");
 
-            // Force a token refresh
-            StartCoroutine(ForceTokenRefresh());
+            // Force Firebase to re-register for notifications
+            StartCoroutine(ForceFirebaseRegistration());
         }
         _launchStage = LaunchStage.Launch;
         pushDecisionScreenObject.SetActive(false);
     }
 
-    private IEnumerator ForceTokenRefresh()
+    private IEnumerator ForceFirebaseRegistration()
     {
-        // Wait a bit for permission to be fully set
-        yield return new WaitForSeconds(2f);
+        // Wait a bit for the permission to be fully set
+        yield return new WaitForSeconds(1f);
 
-        // Try to force token refresh (this might help with registration)
+        // Try to re-initialize Firebase messaging if needed
         try
         {
-            Debug.Log("Forcing token refresh...");
-            // Firebase will automatically generate a new token when permissions are granted
+            Debug.Log("Attempting to force Firebase registration...");
+            // This should help with the registration after permission is granted
+            Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
         }
         catch (Exception ex)
         {
-            Debug.LogError("Error forcing token refresh: " + ex.Message);
+            Debug.LogError("Error in force registration: " + ex.Message);
         }
     }
 
