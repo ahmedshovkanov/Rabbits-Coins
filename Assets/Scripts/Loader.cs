@@ -136,13 +136,12 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
     {
         try
         {
-            // This ensures Firebase is properly initialized
             var firebaseApp = Firebase.FirebaseApp.DefaultInstance;
             Debug.Log("Firebase App initialized: " + firebaseApp);
             _isFirebaseInitialized = true;
 
-            // Request permission if not already granted
-            StartCoroutine(CheckAndRequestPermission());
+            // Request the Firebase token immediately upon initialization
+            StartCoroutine(RequestFirebaseToken());
         }
         catch (Exception ex)
         {
@@ -150,17 +149,45 @@ public class Loader : MonoBehaviour, IAppsFlyerConversionData
         }
     }
 
+    private IEnumerator RequestFirebaseToken()
+    {
+        yield return new WaitForSeconds(1f); // Wait a bit for proper initialization
+
+        // Request the Firebase token
+        var task = Firebase.Messaging.FirebaseMessaging.GetTokenAsync();
+        while (!task.IsCompleted)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        if (task.Exception == null)
+        {
+            _firebaseToken = task.Result;
+            Debug.Log("Firebase Token obtained: " + _firebaseToken);
+
+            // Now that we have the token, proceed to check permissions and update
+            StartCoroutine(CheckAndRequestPermission());
+        }
+        else
+        {
+            Debug.LogError("Failed to get Firebase token: " + task.Exception.Message);
+        }
+    }
+
     private IEnumerator CheckAndRequestPermission()
     {
-        // Wait a bit for initialization
-        yield return new WaitForSeconds(1f);
-
-        // Check if we have a token already (means we're already registered)
+        // Since we've already obtained the token, no need to wait here
         if (string.IsNullOrEmpty(_firebaseToken))
         {
-            Debug.Log("No existing token, checking if we can get one...");
-            // The token will be generated automatically when the app is ready
+            yield break; // Token wasn't obtained successfully
         }
+
+        // Proceed with checking permissions and other initializations
+        _conversionDictionary.TryAdd("push_token", _firebaseToken);
+        _conversionDictionary.TryAdd("firebase_project_id", Firebase.FirebaseApp.DefaultInstance.Options.ProjectId);
+
+        // Now, attempt to fetch promotional URL
+        yield return TryUpdateFirebaseTokenAndGetPromotional();
     }
 
     private IEnumerator Start()
