@@ -12,4 +12,9 @@ public class mmhandler : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
+
+    public void PrivacyBtn()
+    {
+        Application.OpenURL(PrivacyUrl);
+    }
 }

@@ -239,7 +239,6 @@ GameObject:
   - component: {fileID: 223962426}
   - component: {fileID: 223962425}
   - component: {fileID: 223962424}
-  - component: {fileID: 223962427}
   m_Layer: 5
   m_Name: privacy
   m_TagString: Untagged
@@ -310,9 +309,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 223962427}
+      - m_Target: {fileID: 1676259519}
         m_TargetAssemblyTypeName: PrivacyHandler, Assembly-CSharp
-        m_MethodName: LoadURL
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -360,19 +359,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 223962422}
   m_CullTransparentMesh: 1
---- !u!114 &223962427
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 223962422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c64c06e073caca43b7fd35199b30afe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Link: https://rabbitscoins.com/privacy-policy.html
 --- !u!1 &556129762
 GameObject:
   m_ObjectHideFlags: 0
@@ -936,7 +922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5587bb0830289e14bafdbe19fdccf952, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PrivacyUrl: 
+  PrivacyUrl: https://rabbitscoins.com/privacy-policy.html
 --- !u!1 &1718519626
 GameObject:
   m_ObjectHideFlags: 0
