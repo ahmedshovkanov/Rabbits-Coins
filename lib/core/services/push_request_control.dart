@@ -92,9 +92,7 @@ class PushRequestControl {
     data.pushNotificationAccepted = false;
     data.pushDeclinedAt = date.toIso8601String();
     if (isDebug) {
-      print('pushNotificationDecline \n' 'date=$date \n' +
-          'pushNotificationAccepted=${data.pushNotificationAccepted} \n' +
-          'pushDeclinedAt=${data.pushDeclinedAt}\n');
+      print('pushNotificationDecline \n' 'date=$date \n' 'pushNotificationAccepted=${data.pushNotificationAccepted} \n' 'pushDeclinedAt=${data.pushDeclinedAt}\n');
     }
   }
 }

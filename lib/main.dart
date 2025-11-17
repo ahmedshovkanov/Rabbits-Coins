@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/services/sdk_initializer.dart';
 import 'firebase_options.dart';
 import 'package:flutter/cupertino.dart';
-import 'core/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +25,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return const CupertinoApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: PushRequestScreen(),
     );
   }
 }
