@@ -71,9 +71,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                 Expanded(
                   flex: isLandscape ? 3 : 2,
                   child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: AppConfig.pushRequestFadeGradient,
-                    ),
+                    decoration: AppConfig.pushRequestDecoration,
                     padding: EdgeInsets.symmetric(
                       horizontal: isLandscape ? 60 : 30,
                       vertical: 20,
