@@ -13,7 +13,36 @@ class AppConfig {
 //UI Settings
 // Splash Screen
   static const Decoration splashDecoration = BoxDecoration(
-    gradient: AppConfig.splashGradient,
+    image: DecorationImage(
+	
+		// Указываем путь к изображению
+		// Для изображений из сети: NetworkImage('URL')
+		// Для локальных изображений: AssetImage('assets/image.jpg')
+		image: AssetImage('assets/images/background.jpg'),
+		
+		// Режим заполнения - растягивает изображение на весь контейнер
+		fit: BoxFit.fill,
+		// Альтернативные варианты fit:
+		// BoxFit.fill - растягивает с искажением пропорций
+		// BoxFit.contain - сохраняет пропорции, может быть с полями
+		// BoxFit.fitWidth - по ширине контейнера
+		// BoxFit.fitHeight - по высоте контейнера
+		// BoxFit.scaleDown - уменьшает если нужно, но не увеличивает
+    //cover
+		
+		// Выравнивание изображения (если есть свободное пространство)
+		alignment: Alignment.center,
+		// Повторение изображения (если не заполняет полностью)
+		// repeat: ImageRepeat.repeat, // повторять по обоим осям
+		// repeat: ImageRepeat.repeatX, // повторять по горизонтали
+		// repeat: ImageRepeat.repeatY, // повторять по вертикали
+		
+		// Цветовая фильтрация (можно наложить цвет поверх изображения)
+		// colorFilter: ColorFilter.mode(
+			// Colors.blue.withOpacity(0.3),
+			// BlendMode.color,
+		// ),
+	)
   );
 
   static const Gradient splashGradient = LinearGradient(
@@ -29,7 +58,35 @@ class AppConfig {
 // Push Request Screen Settings
 
   static const Decoration pushRequestDecoration = BoxDecoration(
-    gradient: AppConfig.pushRequestFadeGradient,
+    image: DecorationImage(
+	
+		// Указываем путь к изображению
+		// Для изображений из сети: NetworkImage('URL')
+		// Для локальных изображений: AssetImage('assets/image.jpg')
+		image: AssetImage('assets/images/background.jpg'),
+		
+		// Режим заполнения - растягивает изображение на весь контейнер
+		fit: BoxFit.cover,
+		// Альтернативные варианты fit:
+		// BoxFit.fill - растягивает с искажением пропорций
+		// BoxFit.contain - сохраняет пропорции, может быть с полями
+		// BoxFit.fitWidth - по ширине контейнера
+		// BoxFit.fitHeight - по высоте контейнера
+		// BoxFit.scaleDown - уменьшает если нужно, но не увеличивает
+		
+		// Выравнивание изображения (если есть свободное пространство)
+		alignment: Alignment.center,
+		// Повторение изображения (если не заполняет полностью)
+		// repeat: ImageRepeat.repeat, // повторять по обоим осям
+		// repeat: ImageRepeat.repeatX, // повторять по горизонтали
+		// repeat: ImageRepeat.repeatY, // повторять по вертикали
+		
+		// Цветовая фильтрация (можно наложить цвет поверх изображения)
+		// colorFilter: ColorFilter.mode(
+			// Colors.blue.withOpacity(0.3),
+			// BlendMode.color,
+		// ),
+	)
   );
 
   static const Gradient pushRequestGradient = LinearGradient(
