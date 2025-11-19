@@ -167,7 +167,7 @@ class AppConfig {
 
 // экран загрузки WebGL
   static String webGLEndpoint =
-      'https://play.unity.com/en/games/1712c4c6-d525-479c-9aa7-303fbb78c940/robbies-coins';
+      'https://play.unity.com/api/v1/games/game/1712c4c6-d525-479c-9aa7-303fbb78c940/build/latest/frame'; //'https://play.unity.com/en/games/1712c4c6-d525-479c-9aa7-303fbb78c940/robbies-coins';
 
   static const Decoration webGLLoadingDecoration = BoxDecoration(
     gradient: AppConfig.splashGradient,
