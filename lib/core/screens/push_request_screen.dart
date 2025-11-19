@@ -56,8 +56,8 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                   flex: isLandscape ? 2 : 4,
                   child: Center(
                     child: SizedBox(
-                      width: isLandscape ? 200 : 250,
-                      height: isLandscape ? 160 : 250,
+                      width: isLandscape ? 400 : 500,   //200 250
+                      height: isLandscape ? 320 : 500,  //160 250
                       child: const Image(
                         image: AssetImage(
                           'assets/images/Logo.png',
@@ -72,6 +72,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                   flex: isLandscape ? 3 : 2,
                   child: Container(
                     decoration: const BoxDecoration(gradient: AppConfig.pushRequestFadeGradient),
+                    //decoration: AppConfig.pushRequestDecoration,
                     padding: EdgeInsets.symmetric(
                       horizontal: isLandscape ? 60 : 30,
                       vertical: 20,

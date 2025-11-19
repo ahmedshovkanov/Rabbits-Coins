@@ -108,10 +108,10 @@ class AppConfig {
   static const Color titleTextColor = Color(0xFFFFFFFF);
   static const Color subtitleTextColor = Color(0x80FDFDFD);
 
-  static const Color yesButtonColor = Color(0xFFFCB301);
-  static const Color yesButtonShadowColor = Color(0xA3D1710B);
-  static const Color yesButtonTextColor = Color(0xFFFFFFFF);
-  static const Color skipTextColor = Color(0x7DF9F9F9);
+  static const Color yesButtonColor = Color(0xFFFAE29D);
+  static const Color yesButtonShadowColor = Color.fromARGB(255, 245, 174, 112);
+  static const Color yesButtonTextColor = Color.fromARGB(255, 0, 0, 0);
+  static const Color skipTextColor = Color.fromARGB(255, 231, 229, 229);
 
   // Путь к логотипу, если не находит добавить в pubspec.yaml
   static const String logoPath = 'assets/images/Logo.png';
