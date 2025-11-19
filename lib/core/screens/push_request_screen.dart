@@ -90,7 +90,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                           child: Text(
                             'Allow notifications about bonuses and promos',
                             style: TextStyle(
-                              fontSize: isLandscape ? 18 : 16,
+                              fontSize: isLandscape ? 26 : 24,   // 18 16
                               fontWeight: FontWeight.w600,
                               color: AppConfig.titleTextColor,
                               height: 1.3,
@@ -109,9 +109,9 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                           child: Text(
                             'Stay tuned with best offers from our casino',
                             style: TextStyle(
-                              fontSize: isLandscape ? 16 : 14,
+                              fontSize: isLandscape ? 24 : 22,  // 16 14
                               fontWeight: FontWeight.w500,
-                              color: AppConfig.subtitleTextColor,
+                              color: const Color.fromARGB(183, 253, 253, 253),
                               height: 1.3,
                             ),
                             textAlign: TextAlign.center,
