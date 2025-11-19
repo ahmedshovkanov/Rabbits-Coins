@@ -44,7 +44,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
     return Scaffold(
       body: Container(
         decoration:
-            const BoxDecoration(gradient: AppConfig.pushRequestGradient),
+             AppConfig.pushRequestDecoration,
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Column(
@@ -71,7 +71,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                 Expanded(
                   flex: isLandscape ? 3 : 2,
                   child: Container(
-                    decoration: AppConfig.pushRequestDecoration,
+                    decoration: const BoxDecoration(gradient: AppConfig.pushRequestFadeGradient),
                     padding: EdgeInsets.symmetric(
                       horizontal: isLandscape ? 60 : 30,
                       vertical: 20,
