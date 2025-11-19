@@ -219,7 +219,7 @@ class _WebGLWebViewScreenState extends State<WebGLWebViewScreen> {
             Positioned.fill(
               child: Container(
                 decoration: AppConfig
-                    .webGLLoadingDecoration, // const BoxDecoration(gradient: AppConfig.splashGradient),
+                    .pushRequestDecoration, // const BoxDecoration(gradient: AppConfig.splashGradient),
                 child: SafeArea(
                   child: Column(
                     children: [
