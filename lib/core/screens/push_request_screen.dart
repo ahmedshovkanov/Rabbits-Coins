@@ -109,7 +109,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                           child: Text(
                             'Stay tuned with best offers from our casino',
                             style: TextStyle(
-                              fontSize: isLandscape ? 24 : 22,  // 16 14
+                              fontSize: isLandscape ? 21 : 19,  // 16 14
                               fontWeight: FontWeight.w500,
                               color: const Color.fromARGB(183, 253, 253, 253),
                               height: 1.3,
@@ -139,7 +139,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                             child: Text(
                               'Yes, I Want Bonuses!',
                               style: TextStyle(
-                                  fontSize: isLandscape ? 18 : 16,
+                                  fontSize: isLandscape ? 18 : 22,  // 18 16
                                   fontWeight: FontWeight.w600,
                                   color: AppConfig.yesButtonTextColor),
                             ),

@@ -158,8 +158,8 @@ class AppConfig {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFF2AFFFF),
-      Color(0xFF0D64AB),
+      Color.fromARGB(255, 119, 75, 17),
+      Color.fromARGB(255, 227, 154, 7),
     ],
   );
   static const Color errorScreenTextColor = Color(0xFFFFFFFF);
